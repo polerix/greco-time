@@ -27,9 +27,28 @@ export default class Game {
 
         this.isGameOver = false;
         this.isPaused = false;
+        this.isDemo = false;
+        this.demoTimer = 0;
+        this.demoInput = { keys: [] };
+    }
+
+    startDemo() {
+        this.isDemo = true;
+        this.isGameOver = false;
+        this.score = 0;
+        this.lives = 4;
+        this.map.load().then(() => {
+            this.player.resetPosition(this.map.getStartPosition());
+            this.enemies = this.map.getEnemies();
+            this.gameLoop(0);
+        });
     }
 
     start() {
+        this.isDemo = false;
+        this.isGameOver = false;
+        this.score = 0;
+        this.lives = 4;
         this.map.load().then(() => {
             this.player.resetPosition(this.map.getStartPosition());
             this.enemies = this.map.getEnemies();
@@ -50,7 +69,12 @@ export default class Game {
     }
 
     update(deltaTime) {
-        this.player.update(this.input, this.map, deltaTime);
+        if (this.isDemo) {
+            this.updateDemoInput(deltaTime);
+            this.player.update(this.demoInput, this.map, deltaTime);
+        } else {
+            this.player.update(this.input, this.map, deltaTime);
+        }
         this.enemies.forEach(enemy => enemy.update(this.player, this.map, deltaTime));
 
         // Check Collisions
@@ -90,12 +114,27 @@ export default class Game {
     handleDeath() {
         this.lives--;
         if (this.lives <= 0) {
-            this.isGameOver = true;
-            alert("GAME OVER");
-            location.reload();
+            if (this.isDemo) {
+                // Silent reset for demo
+                this.startDemo(); 
+            } else {
+                this.isGameOver = true;
+                alert("GAME OVER");
+                location.reload();
+            }
         } else {
             this.player.resetPosition(this.map.getStartPosition());
             this.enemies.forEach(e => e.reset());
+        }
+    }
+
+    updateDemoInput(deltaTime) {
+        this.demoTimer += deltaTime;
+        if (this.demoTimer > 1000) { // Change direction every second
+            this.demoTimer = 0;
+            const moves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            const randomMove = moves[Math.floor(Math.random() * moves.length)];
+            this.demoInput.keys = [randomMove];
         }
     }
 

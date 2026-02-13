@@ -38,6 +38,9 @@ window.addEventListener('load', () => {
         }
     });
 
+    // Start demo immediately
+    game.startDemo();
+
     function startGame() {
         startScreen.style.display = 'none';
         game.start();
