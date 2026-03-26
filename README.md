@@ -1,4 +1,4 @@
-# 🌊 GrecoTime 🌊
+# 🌊 greco-time 🌊
 
 🫧 A classic game, flowing with the power of AI 🫧
 

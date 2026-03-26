@@ -36,7 +36,7 @@ export default class Map {
 
     async load() {
         // Fetch the level text file (we need to create this dynamically or port it)
-        // For now, I will hardcode the Level 1 layout based on typical GrecoTime design 
+        // For now, I will hardcode the Level 1 layout based on typical greco-time design 
         // or try to read it if I could.
         // Since I can't read the .txt file from here easily into JS without a server, 
         // I will define a simple test map string.
